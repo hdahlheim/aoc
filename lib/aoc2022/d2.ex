@@ -11,18 +11,17 @@ defmodule Aoc.Aoc2022.D2 do
   def part_1(input) do
     input
     |> String.split("\n", trim: true)
-    |> Enum.map(fn
-      "A X" -> 3 + 1
-      "A Y" -> 6 + 2
-      "A Z" -> 0 + 3
-      "B X" -> 0 + 1
-      "B Y" -> 3 + 2
-      "B Z" -> 6 + 3
-      "C X" -> 6 + 1
-      "C Y" -> 0 + 2
-      "C Z" -> 3 + 3
+    |> Enum.reduce(0, fn
+      "A X", acc -> acc + 3 + 1
+      "A Y", acc -> acc + 6 + 2
+      "A Z", acc -> acc + 0 + 3
+      "B X", acc -> acc + 0 + 1
+      "B Y", acc -> acc + 3 + 2
+      "B Z", acc -> acc + 6 + 3
+      "C X", acc -> acc + 6 + 1
+      "C Y", acc -> acc + 0 + 2
+      "C Z", acc -> acc + 3 + 3
     end)
-    |> Enum.sum()
   end
 
   @doc """
@@ -37,17 +36,16 @@ defmodule Aoc.Aoc2022.D2 do
   def part_2(input) do
     input
     |> String.split("\n", trim: true)
-    |> Enum.map(fn
-      "A X" -> 3 + 0
-      "A Y" -> 1 + 3
-      "A Z" -> 2 + 6
-      "B X" -> 1 + 0
-      "B Y" -> 2 + 3
-      "B Z" -> 3 + 6
-      "C X" -> 2 + 0
-      "C Y" -> 3 + 3
-      "C Z" -> 1 + 6
+    |> Enum.reduce(0, fn
+      "A X", acc -> acc + 3 + 0
+      "A Y", acc -> acc + 1 + 3
+      "A Z", acc -> acc + 2 + 6
+      "B X", acc -> acc + 1 + 0
+      "B Y", acc -> acc + 2 + 3
+      "B Z", acc -> acc + 3 + 6
+      "C X", acc -> acc + 2 + 0
+      "C Y", acc -> acc + 3 + 3
+      "C Z", acc -> acc + 1 + 6
     end)
-    |> Enum.sum()
   end
 end
