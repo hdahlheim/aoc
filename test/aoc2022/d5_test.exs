@@ -3,7 +3,6 @@ defmodule Aoc.Aoc2022.D5Test do
   alias Aoc.Aoc2022.D5
   doctest Aoc.Aoc2022.D5
 
-  @tag :skip
   test "part 1" do
     res =
       "./test/aoc2022/input/d5.txt"
@@ -11,10 +10,9 @@ defmodule Aoc.Aoc2022.D5Test do
       |> D5.part_1()
       |> IO.inspect(label: :part_1)
 
-    assert 0 == res
+    assert "FWSHSPJWM" == res
   end
 
-  @tag :skip
   test "part 2" do
     res =
       "./test/aoc2022/input/d5.txt"
@@ -22,6 +20,6 @@ defmodule Aoc.Aoc2022.D5Test do
       |> D5.part_2()
       |> IO.inspect(label: :part_2)
 
-    assert 0 == res
+    assert "PWPWHGFZS" = res
   end
 end
