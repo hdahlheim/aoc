@@ -1,6 +1,6 @@
 defmodule Aoc.Aoc2024.Day6 do
   defmodule Room do
-    defstruct obstical: nil, coordinates: []
+    defstruct obsticle: nil, coordinates: []
   end
 
   @doc """
@@ -62,16 +62,19 @@ defmodule Aoc.Aoc2024.Day6 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.uniq()
 
-    Enum.reduce(solution_part1, 0, fn pos, acc ->
+    Task.async_stream(solution_part1, fn pos ->
       if pos != start_coordinates do
         res =
-          Map.put(room, :obstical, pos)
+          Map.put(room, :obsticle, pos)
           |> walk(direction, start_coordinates, MapSet.new())
 
-        if :loop == res, do: acc + 1, else: acc
+        if :loop == res, do: 1, else: 0
       else
-        acc
+        0
       end
+    end)
+    |> Enum.reduce(0, fn {:ok, val}, acc ->
+      acc + val
     end)
   end
 
@@ -83,7 +86,7 @@ defmodule Aoc.Aoc2024.Day6 do
       MapSet.member?(steps, {next_cordiantes, direction}) ->
         :loop
 
-      next_tile == "#" or next_cordiantes == room.obstical ->
+      next_tile == "#" or next_cordiantes == room.obsticle ->
         walk(room, turn(direction), coordinates, MapSet.put(steps, {coordinates, direction}))
 
       next_tile in [".", "^", ">", "V", "<"] ->
@@ -115,7 +118,7 @@ defmodule Aoc.Aoc2024.Day6 do
   def turn(:left), do: :up
 
   def to_room(room) do
-    struct!(__MODULE__.Room, obstical: nil, coordinates: room)
+    struct!(__MODULE__.Room, obsticle: nil, coordinates: room)
   end
 
   def find_stating_coordinates({_, v}) do
