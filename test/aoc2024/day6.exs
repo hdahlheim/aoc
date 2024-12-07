@@ -1,7 +1,7 @@
 defmodule Aoc.Aoc2024.Day6Test do
   use ExUnit.Case
   alias Aoc.Aoc2024.Day6
-  # doctest Aoc.Aoc2024.Day6
+  doctest Aoc.Aoc2024.Day6
 
   test "aoc day6 part1" do
     assert 5318 ==
