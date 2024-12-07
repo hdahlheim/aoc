@@ -32,9 +32,9 @@ defmodule Aoc.Aoc2024.Day5 do
   iex> \""")
   """
   def part_1(input) do
-    {key, puzel} = parse(input)
+    {key, puzzle} = parse(input)
 
-    Enum.filter(puzel, &is_correct_order?(&1, key))
+    Enum.filter(puzzle, &is_correct_order?(&1, key))
     |> Enum.map(fn l -> Enum.at(l, div(length(l), 2)) end)
     |> Enum.map(fn n -> String.to_integer(n) end)
     |> Enum.sum()
@@ -73,29 +73,19 @@ defmodule Aoc.Aoc2024.Day5 do
   iex> \""")
   """
   def part_2(input) do
-    {key, puzel} = parse(input)
+    {key, puzzle} = parse(input)
 
-    Enum.reject(puzel, &is_correct_order?(&1, key))
+    Enum.reject(puzzle, &is_correct_order?(&1, key))
     |> Enum.map(fn line ->
-      Enum.sort(
-        line,
-        fn n1, n2 ->
-          k = key[n2]
-
-          cond do
-            k != nil and n1 in k -> false
-            :otherwise -> true
-          end
-        end
-      )
+      Enum.sort(line, &(!(key[&2] != nil and &1 in key[&2])))
     end)
-    |> Enum.map(fn l -> Enum.at(l, div(length(l), 2)) end)
-    |> Enum.map(fn n -> String.to_integer(n) end)
+    |> Enum.map(&Enum.at(&1, div(length(&1), 2)))
+    |> Enum.map(&String.to_integer/1)
     |> Enum.sum()
   end
 
   def parse(input) do
-    [key, puzel] = String.split(input, "\n\n", trim: true)
+    [key, puzzle] = String.split(input, "\n\n", trim: true)
 
     key =
       key
@@ -105,27 +95,26 @@ defmodule Aoc.Aoc2024.Day5 do
         Map.update(acc, l, [r], fn list -> Enum.reverse([r | list]) end)
       end)
 
-    puzel =
-      puzel
+    puzzle =
+      puzzle
       |> String.split("\n", trim: true)
       |> Enum.map(&String.split(&1, ",", trim: true))
 
-    {key, puzel}
+    {key, puzzle}
   end
 
   def is_correct_order?(line, key) do
     line_idx = Enum.with_index(line)
 
-    :ok ==
-      Enum.reduce_while(line_idx, :ok, fn {num, idx}, _acc ->
-        to_check = key[num]
+    Enum.reduce_while(line_idx, true, fn {num, idx}, _acc ->
+      to_check = key[num]
 
-        if check_page_order(idx, line_idx, to_check) do
-          {:cont, :ok}
-        else
-          {:halt, :line_error}
-        end
-      end)
+      if check_page_order(idx, line_idx, to_check) do
+        {:cont, true}
+      else
+        {:halt, false}
+      end
+    end)
   end
 
   def check_page_order(_current_idx, _line_with_idx, to_check) when to_check == nil, do: true
