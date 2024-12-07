@@ -1,6 +1,6 @@
 defmodule Aoc.Aoc2024.Day6 do
   defmodule Room do
-    defstruct bounds: {0, 0}, obstical: nil, coordinates: []
+    defstruct obstical: nil, coordinates: []
   end
 
   @doc """
@@ -62,7 +62,6 @@ defmodule Aoc.Aoc2024.Day6 do
       |> Enum.map(&elem(&1, 0))
       |> Enum.uniq()
 
-    # Task.async_stream(
     Enum.reduce(solution_part1, 0, fn pos, acc ->
       if pos != start_coordinates do
         res =
