@@ -26,3 +26,5 @@ aoc-*.tar
 /tmp/
 
 /test/*/input/*.txt
+
+.aoc-cookie
