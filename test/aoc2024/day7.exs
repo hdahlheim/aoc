@@ -3,7 +3,6 @@ defmodule Aoc.Aoc2024.Day7Test do
   alias Aoc.Aoc2024.Day7
   doctest Aoc.Aoc2024.Day7
 
-  @tag :skip
   test "aoc day7 part1" do
     assert 945_512_582_195 ==
              "./test/aoc2024/input/day7.txt"
@@ -12,9 +11,8 @@ defmodule Aoc.Aoc2024.Day7Test do
              |> IO.inspect(label: :part1)
   end
 
-  @tag :skip
   test("aoc day7 part2") do
-    assert 0 ==
+    assert 271_691_107_779_347 ==
              "./test/aoc2024/input/day7.txt"
              |> File.read!()
              |> Day7.part_2()
