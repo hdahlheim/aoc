@@ -10,13 +10,9 @@ defmodule Aoc2025.Day3 do
   def part_1(input) do
     batteries = parse(input)
 
-    num_digits = 2
-
     batteries
     |> Enum.reduce(0, fn battery, acc ->
-      digits =
-        battery
-        |> joltage_value(2)
+      digits = joltage_value(battery, 2)
 
       acc + Integer.undigits(digits)
     end)
@@ -33,89 +29,33 @@ defmodule Aoc2025.Day3 do
   def part_2(input) do
     batteries = parse(input)
 
-    num_digits = 12
-
     batteries
     |> Enum.reduce(0, fn battery, acc ->
-      digits =
-        battery
-        |> joltage_value(12)
-        |> IO.inspect()
+      digits = joltage_value(battery, 12)
 
       acc + Integer.undigits(digits)
     end)
   end
 
   defp joltage_value(battery, digits) do
-    battery_length = length(battery)
-    l1 = Enum.take(battery, battery_length - 1)
-    {a, idx_a} = Enum.max_by(l1, &elem(&1, 0), &>=/2, {0, -1})
-
-    next_numbers =
-      get_next_number(battery, digits - 1, idx_a + 1, [a])
-      |> Enum.reverse()
+    get_next_value(battery, digits, [])
+    |> Enum.reverse()
   end
 
-  defp get_next_number(_battery, 0, _index, acc), do: acc
+  defp get_next_value(_battery, 0, acc), do: acc
 
-  defp get_next_number(battery, digits, idx, acc) do
-    l2 = Enum.drop(battery, idx)
-    {n, idx_n} = Enum.max_by(l2, &elem(&1, 0))
-    get_next_number(battery, digits - 1, idx_n + 1, [n | acc])
+  defp get_next_value(battery, remaining_digits, acc) do
+    len = length(battery)
+    l1 = Enum.take(battery, len - (remaining_digits - 1))
+    n = Enum.max(l1)
+    new_idx = Enum.find_index(l1, &(&1 == n)) + 1
+
+    new_list = Enum.drop(battery, new_idx)
+    get_next_value(new_list, remaining_digits - 1, [n | acc])
   end
-
-  # defp get_numbers(battery, [], num_digits) do
-  #   battery_length = length(battery)
-  #   initial_max = {a, idx_a} = Enum.max_by(battery, &elem(&1, 0))
-
-  #   haystack =
-  #     cond do
-  #       idx_a <= battery_length - num_digits ->
-  #         Enum.filter(battery, &(elem(&1, 1) > idx_a))
-
-  #       :else ->
-  #         battery -- [{a, idx_a}]
-  #     end
-
-  #   get_numbers(haystack, [initial_max], num_digits - 1)
-  # end
-
-  # defp get_numbers(_battery, acc, 0), do: acc
-
-  # defp get_numbers(battery, acc, num_digits) do
-  #   battery_length = length(battery)
-
-  #   a = Enum.max_by(battery, &elem(&1, 0))
-  #   idx = Enum.find_index(battery, &(&1 == a))
-
-  #   haystack =
-  #     cond do
-  #       idx <= battery_length - num_digits ->
-  #         Enum.filter(battery, &(elem(&1, 1) > elem(a, 1)))
-
-  #       :else ->
-  #         haystack = battery -- [a]
-  #     end
-
-  #   get_numbers(haystack, [a | acc], num_digits - 1)
-  # end
-
-  # defp old_get_numbers(battery) do
-  #   {a, idx_a} = Enum.max_by(battery, &elem(&1, 0))
-  #   {b, idx_b} = Enum.max_by(battery -- [{a, idx_a}], &elem(&1, 0))
-  #   c = Enum.filter(battery, &(elem(&1, 1) > idx_a))
-
-  #   cond do
-  #     idx_a > idx_b and is_tuple(c) ->
-  #       [a, elem(c, 0)]
-
-  #     :else ->
-  #       [b, a]
-  #   end
-  # end
 
   defp parse(input) do
     String.split(input, "\n", trim: true)
-    |> Enum.map(fn s -> String.to_integer(s) |> Integer.digits() |> Enum.with_index() end)
+    |> Enum.map(fn s -> String.to_integer(s) |> Integer.digits() end)
   end
 end

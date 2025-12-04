@@ -61,7 +61,7 @@ defmodule Aoc2025.Day1 do
       fn
         {dir, steps}, {start, counter} ->
           delta = to_delta(dir, steps)
-          target = start + delta
+          # target = start + delta
 
           new_start = Integer.mod(start + delta, @total_steps)
           rotations = div(abs(delta), @total_steps)
