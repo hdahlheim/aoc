@@ -1,4 +1,9 @@
 defmodule Aoc2025.Day6 do
+  def initial_value("+"), do: 0
+  def initial_value("*"), do: 1
+  def to_operator("+"), do: &+/2
+  def to_operator("*"), do: &*/2
+
   @doc """
     iex> 4277556 = Aoc2025.Day6.part_1(\"""
     iex> 123 328  51 64
@@ -10,10 +15,25 @@ defmodule Aoc2025.Day6 do
   def part_1(input) do
     parse_1(input)
     |> Enum.reduce(0, fn [instruction | values], acc ->
-      op = to_operator(instruction)
-
-      acc + Enum.reduce(values, initial_value(instruction), op)
+      acc + Enum.reduce(values, initial_value(instruction), to_operator(instruction))
     end)
+  end
+
+  def parse_1(input) do
+    [instructions | values] =
+      String.split(input, "\n", trim: true)
+      |> Enum.reverse()
+      |> Enum.map(fn l -> String.split(l, " ", trim: true) end)
+
+    values =
+      Enum.map(
+        values,
+        fn l -> Enum.map(l, &String.to_integer(&1)) end
+      )
+
+    [instructions | values]
+    |> Enum.zip()
+    |> Enum.map(&Tuple.to_list/1)
   end
 
   @doc """
@@ -31,41 +51,21 @@ defmodule Aoc2025.Day6 do
       instructions,
       {0, all_values},
       fn instruction, {current_total, [values | rest]} ->
-        op = to_operator(instruction)
-        res = Enum.reduce(values, initial_value(instruction), op)
-
+        res = Enum.reduce(values, initial_value(instruction), to_operator(instruction))
         {current_total + res, rest}
       end
     )
     |> elem(0)
   end
 
-  def initial_value("+"), do: 0
-  def initial_value("*"), do: 1
-  def to_operator("+"), do: &+/2
-  def to_operator("*"), do: &*/2
-
-  def parse_1(input) do
-    [operators | values] =
-      String.split(input, "\n", trim: true)
-      |> Enum.reverse()
-      |> Enum.map(fn l -> String.split(l, " ", trim: true) end)
-
-    values = Enum.map(values, fn l -> Enum.map(l, &String.to_integer(&1)) end)
-
-    [operators | values]
-    |> Enum.zip()
-    |> Enum.map(&Tuple.to_list/1)
-  end
-
   def parse_2(input) do
-    [operators | values] =
+    [instructions | values] =
       String.split(input, "\n", trim: true)
       |> Enum.reverse()
       |> Enum.map(fn l -> String.split(l, "") end)
 
     instructions =
-      Enum.map(operators, &String.trim/1)
+      Enum.map(instructions, &String.trim/1)
       |> Enum.filter(&(&1 != ""))
 
     values =
